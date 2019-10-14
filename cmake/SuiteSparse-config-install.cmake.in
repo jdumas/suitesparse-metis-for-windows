@@ -6,7 +6,7 @@ get_filename_component(_SuiteSparse_PREFIX "${_SuiteSparse_PREFIX}" PATH)
 
 include(CMakeFindDependencyMacro)
 if (@SuiteSparse_WITH_MKL@)
-  find_dependency(MKL)
+  # find_dependency(MKL)
 elseif (@SuiteSparse_LAPACK_used_CONFIG@) # SuiteSparse_LAPACK_used_CONFIG
   # use config file which provides LAPACK (and BLAS) for us
   find_dependency(LAPACK CONFIG)
