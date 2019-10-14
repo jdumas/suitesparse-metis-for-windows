@@ -5,7 +5,7 @@
 # Updated by jesnault (jerome.esnault@inria.fr) 2014-01-21
 # -----------------------------------------------------------------
 
-option(HUNTER_ENABLED "Enable Hunter package manager support" OFF)
+# option(HUNTER_ENABLED "Enable Hunter package manager support" OFF)
 include(cmake/HunterGate.cmake)
 
 HunterGate(
@@ -13,9 +13,10 @@ HunterGate(
   SHA1 "e14bc153a7f16d6a5eeec845fb0283c8fad8c358"
 )
 
-PROJECT(SuiteSparseProject)
-
 cmake_minimum_required(VERSION 3.1)
+project(SuiteSparseProject)
+
+option(USE_MKL "Use Intel MKL for blas/lapack" ON)
 
 # https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html
 string(COMPARE EQUAL "${CMAKE_CXX_STANDARD}" "" no_cmake_cxx_standard_set)
@@ -33,7 +34,6 @@ include(checkGetSuiteSparse.cmake)
 if(BUILD_SHARED_LIBS)
 	set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif(BUILD_SHARED_LIBS)
-
 
 SET(LIBRARY_OUTPUT_PATH ${${PROJECT_NAME}_BINARY_DIR}/lib CACHE PATH "Output directory for libraries" )
 SET(EXECUTABLE_OUTPUT_PATH ${${PROJECT_NAME}_BINARY_DIR}/bin CACHE PATH "Output directory for applications" )
@@ -76,6 +76,8 @@ set(CMAKE_DEBUG_POSTFIX  "d")
 IF(MSVC)
 	set(SP_LIB_PREFIX "lib")  # Libs are: "libXXX"
 ENDIF(MSVC)
+
+set(SuiteSparse_COMPILE_OPTIONS)
 
 ## check if we can build metis
 SET(BUILD_METIS_DEFAULT ON)
@@ -195,6 +197,8 @@ macro(declare_suitesparse_library targetName srcsList headersList)
 		 ${dsl_TARGET_PRIVATE_LINK}	## external required libs
 	)
 
+	target_compile_options(${targetName} PUBLIC ${SuiteSparse_COMPILE_OPTIONS})
+
 	install_suitesparse_project(${targetName} "${headersList}")
 endmacro()
 
@@ -217,30 +221,41 @@ if(WITH_CUDA)
 	ENDIF(${CUDA_FOUND})
 endif()
 
-hunter_add_package(LAPACK) # only in effect if HUNTER_ENABLED is set
-# prefer LAPACK config file
-find_package(LAPACK CONFIG)
-if (LAPACK_FOUND AND TARGET blas AND TARGET lapack)
-  message(STATUS "found lapack and blas config file. Linking targets lapack and blas")
-  message(STATUS "- LAPACK_CONFIG: ${LAPACK_CONFIG}")
-  set(SuiteSparse_LINKER_LAPACK_BLAS_LIBS lapack blas)
-  # for suitesparse-config file set method used to find LAPACK (and BLAS)
-  set(SuiteSparse_LAPACK_used_CONFIG YES)
-else()
-  # missing config file or targets, try BLAS and LAPACK
-  find_package(BLAS)
-  find_package(LAPACK)
-  if (BLAS_FOUND AND LAPACK_FOUND)
-    message(STATUS "found lapack and blas config file. Linking targets lapack and blas")
-    message(STATUS "- LAPACK_LIBRARIES: ${LAPACK_LIBRARIES}")
-    message(STATUS "- BLAS_LIBRARIES:   ${BLAS_LIBRARIES}")
-    set(SuiteSparse_LINKER_LAPACK_BLAS_LIBS ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
-    # for suitesparse-config file set method used to find LAPACK (and BLAS)
-    set(SuiteSparse_LAPACK_used_CONFIG NO)
-  else () # LAPACK is not found
-    message(FATAL_ERROR "lapack not found")
+if (USE_MKL)
+  set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+  find_package(MKL)
+  if (NOT MKL_FOUND)
+    message(FATAL_ERROR "Could not find MKL libraries. Make sure MKLROOT environment variable is set correctly.")
+  else()
+    set(SuiteSparse_COMPILE_OPTIONS ${MKL_COMPILE_OPTIONS} ${SuiteSparse_COMPILE_OPTIONS})
+    set(SuiteSparse_LINKER_LAPACK_BLAS_LIBS ${MKL_LIBRARIES})
   endif()
-endif()
+else()
+  hunter_add_package(LAPACK) # only in effect if HUNTER_ENABLED is set
+  # prefer LAPACK config file
+  find_package(LAPACK CONFIG)
+  if (LAPACK_FOUND AND TARGET blas AND TARGET lapack)
+    message(STATUS "found lapack and blas config file. Linking targets lapack and blas")
+    message(STATUS "- LAPACK_CONFIG: ${LAPACK_CONFIG}")
+    set(SuiteSparse_LINKER_LAPACK_BLAS_LIBS lapack blas)
+    # for suitesparse-config file set method used to find LAPACK (and BLAS)
+    set(SuiteSparse_LAPACK_used_CONFIG YES)
+  else()
+    # missing config file or targets, try BLAS and LAPACK
+    find_package(BLAS)
+    find_package(LAPACK)
+    if (BLAS_FOUND AND LAPACK_FOUND)
+      message(STATUS "found lapack and blas config file. Linking targets lapack and blas")
+      message(STATUS "- LAPACK_LIBRARIES: ${LAPACK_LIBRARIES}")
+      message(STATUS "- BLAS_LIBRARIES:   ${BLAS_LIBRARIES}")
+      set(SuiteSparse_LINKER_LAPACK_BLAS_LIBS ${LAPACK_LIBRARIES} ${BLAS_LIBRARIES})
+      # for suitesparse-config file set method used to find LAPACK (and BLAS)
+      set(SuiteSparse_LAPACK_used_CONFIG NO)
+    else () # LAPACK is not found
+      message(FATAL_ERROR "lapack not found")
+    endif()
+  endif()
+endif(USE_MKL)
 
 IF(BUILD_METIS)
 	set(SuiteSparse_LINKER_METIS_LIBS "metis")
