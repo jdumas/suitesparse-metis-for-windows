@@ -19,9 +19,8 @@
 #  MKL_CORE_LIBRARY - MKL core library
 #
 #  The environment variables MKLROOT and INTEL are used to find the library.
-#  If the CMake variable MKL_ROOT is defined, it is used to set the value of
-#  the environment variable MKLROOT. Everything else is ignored.
-#  If MKL is found "-DMKL_ILP64" is added to CMAKE_C_FLAGS and CMAKE_CXX_FLAGS.
+#  Everything else is ignored. If MKL is found "-DMKL_ILP64" is added to
+#  CMAKE_C_FLAGS and CMAKE_CXX_FLAGS.
 #
 #  Example usage:
 #
@@ -95,12 +94,6 @@ find_library(MKL_CORE_LIBRARY
                    $ENV{MKLROOT}/lib/intel64
                    $ENV{INTEL}/mkl/lib/intel64
              NO_DEFAULT_PATH)
-
-message("ENV{MKLROOT}: $ENV{MKLROOT}")
-message("MKL_INTERFACE_LIBRARY: ${MKL_INTERFACE_LIBRARY}")
-message("MKL_SEQUENTIAL_LAYER_LIBRARY: ${MKL_SEQUENTIAL_LAYER_LIBRARY}")
-message("MKL_CORE_LIBRARY: ${MKL_CORE_LIBRARY}")
-message("MKL_INCLUDE_DIR: ${MKL_INCLUDE_DIR}")
 
 set(MKL_INCLUDE_DIRS ${MKL_INCLUDE_DIR})
 set(MKL_LIBRARIES ${MKL_INTERFACE_LIBRARY} ${MKL_SEQUENTIAL_LAYER_LIBRARY} ${MKL_CORE_LIBRARY})
