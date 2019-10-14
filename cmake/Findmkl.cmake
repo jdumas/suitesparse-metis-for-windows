@@ -73,6 +73,10 @@ else()
   endif()
 endif()
 
+if(DEFINED MKL_ROOT)
+  set(ENV{MKLROOT} "{MKL_ROOT")
+endif()
+
 find_path(MKL_INCLUDE_DIR NAMES mkl.h HINTS $ENV{MKLROOT}/include)
 
 find_library(MKL_INTERFACE_LIBRARY
