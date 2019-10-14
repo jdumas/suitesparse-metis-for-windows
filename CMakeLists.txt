@@ -232,8 +232,10 @@ if (USE_MKL)
   else()
     set(SuiteSparse_COMPILE_OPTIONS ${MKL_COMPILE_OPTIONS} ${SuiteSparse_COMPILE_OPTIONS})
     set(SuiteSparse_LINKER_LAPACK_BLAS_LIBS ${MKL_LIBRARIES})
+    set(SuiteSparse_WITH_MKL ON)
   endif()
 else()
+  set(SuiteSparse_WITH_MKL OFF)
   hunter_add_package(LAPACK) # only in effect if HUNTER_ENABLED is set
   # prefer LAPACK config file
   find_package(LAPACK CONFIG)
