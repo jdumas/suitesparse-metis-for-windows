@@ -5,7 +5,7 @@
 # Updated by jesnault (jerome.esnault@inria.fr) 2014-01-21
 # -----------------------------------------------------------------
 
-# option(HUNTER_ENABLED "Enable Hunter package manager support" OFF)
+option(HUNTER_ENABLED "Enable Hunter package manager support" OFF)
 include(cmake/HunterGate.cmake)
 
 HunterGate(
@@ -16,7 +16,7 @@ HunterGate(
 cmake_minimum_required(VERSION 3.1)
 project(SuiteSparseProject)
 
-option(USE_MKL "Use Intel MKL for blas/lapack" ON)
+option(USE_MKL "Use Intel MKL for blas/lapack" OFF)
 
 # https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html
 string(COMPARE EQUAL "${CMAKE_CXX_STANDARD}" "" no_cmake_cxx_standard_set)
@@ -255,7 +255,7 @@ else()
       message(FATAL_ERROR "lapack not found")
     endif()
   endif()
-endif(USE_MKL)
+endif()
 
 IF(BUILD_METIS)
 	set(SuiteSparse_LINKER_METIS_LIBS "metis")
