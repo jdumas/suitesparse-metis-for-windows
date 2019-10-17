@@ -39,6 +39,7 @@ endif()
 
 include(checkGetSuiteSparse.cmake)
 
+option(BUILD_SHARED_LIBS "Build shared libraries." ON)
 if(BUILD_SHARED_LIBS)
 	set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 endif(BUILD_SHARED_LIBS)
@@ -88,7 +89,7 @@ ENDIF(MSVC)
 set(SuiteSparse_COMPILE_OPTIONS)
 
 ## check if we can build metis
-SET(BUILD_METIS_DEFAULT ON)
+SET(BUILD_METIS_DEFAULT OFF)
 if(NOT EXISTS "${CMAKE_CURRENT_SOURCE_DIR}/SuiteSparse/metis-5.1.0/CMakeLists.txt")
 	SET(BUILD_METIS_DEFAULT OFF)
 endif()

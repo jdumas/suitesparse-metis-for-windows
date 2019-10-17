@@ -37,25 +37,25 @@ set(suitesparseconfig_SOURCE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/SuiteSparse_config)
 if(WITH_CUDA)
 	set(SUBPROJECTS_TO_ADD
 		${SUBPROJECTS_TO_ADD}
-		SuiteSparse_GPURuntime
-		GPUQREngine	
+		# SuiteSparse_GPURuntime
+		# GPUQREngine
 		)
 endif()
 
 set(SUBPROJECTS_TO_ADD
-    ${SUBPROJECTS_TO_ADD} 
+	${SUBPROJECTS_TO_ADD}
 	SuiteSparse_config
 	AMD
-	BTF
+	# BTF
 	CAMD
 	CCOLAMD
 	COLAMD
 	CHOLMOD
-	CXSparse
-	KLU
-	LDL
-	UMFPACK
-	SPQR
+	# CXSparse
+	# KLU
+	# LDL
+	# UMFPACK
+	# SPQR
 	#CACHE STRING "list of all sub-directories to add to cmake build"
 )
 
