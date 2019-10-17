@@ -13,10 +13,18 @@ HunterGate(
   SHA1 "e14bc153a7f16d6a5eeec845fb0283c8fad8c358"
 )
 
-cmake_minimum_required(VERSION 3.1)
+# Compile with /MT or /MTd
+if(POLICY CMP0091)
+    cmake_policy(SET CMP0091 NEW)
+endif()
+
+set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+
+cmake_minimum_required(VERSION 3.15)
 project(SuiteSparseProject)
 
-option(USE_MKL "Use Intel MKL for blas/lapack" OFF)
+option(USE_MKL "Use Intel MKL for blas/lapack" ON)
+set(MKL_ROOT ${CMAKE_CURRENT_LIST_DIR}/../mkl)
 
 # https://cmake.org/cmake/help/latest/prop_tgt/CXX_STANDARD.html
 string(COMPARE EQUAL "${CMAKE_CXX_STANDARD}" "" no_cmake_cxx_standard_set)
