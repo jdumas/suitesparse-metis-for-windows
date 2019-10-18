@@ -25,7 +25,9 @@
 #include "cholmod_config.h"
 #include "cholmod_internal.h"
 #include "cholmod_check.h"
+#ifndef NMATRIXOPS
 #include "cholmod_matrixops.h"
+#endif
 #include <string.h>
 #include <ctype.h>
 
@@ -113,7 +115,7 @@ static void get_value
 
 /* Print a numeric value to the file, using the shortest format that ensures
  * the value is written precisely.  Returns TRUE if successful, FALSE otherwise.
- */ 
+ */
 
 static int print_value
 (
@@ -262,7 +264,7 @@ static int print_triplet
     double z		/* imaginary part */
 )
 {
-    int ok ; 
+    int ok ;
     ok = (fprintf (f, ID " " ID, 1+i, 1+j) > 0) ;
     if (!is_binary)
     {
