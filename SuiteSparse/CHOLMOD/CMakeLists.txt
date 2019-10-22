@@ -17,7 +17,7 @@ declare_suitesparse_library(cholmod "${LIBSRCS}" "${LIBHDRS}"
 	TARGET_PUBLIC_LINK 	${SuiteSparse_LINKER_METIS_LIBS} amd camd colamd ccolamd
 )
 
-target_compile_definitions(cholmod PUBLIC NSUPERNODAL NMATRIXOPS)
+target_compile_definitions(cholmod PUBLIC NSUPERNODAL NMATRIXOPS NMODIFY NSUPERNODAL)
 
 if(WITH_CUDA)
 	target_link_libraries(cholmod ${CUDA_LIBRARIES} ${CUDA_CUBLAS_LIBRARIES})
