@@ -240,7 +240,7 @@ if (USE_MKL)
     message(FATAL_ERROR "Could not find MKL libraries. Make sure MKLROOT environment variable is set correctly.")
   else()
     set(SuiteSparse_COMPILE_OPTIONS ${MKL_COMPILE_OPTIONS} ${SuiteSparse_COMPILE_OPTIONS})
-    set(SuiteSparse_LINKER_LAPACK_BLAS_LIBS ${MKL_LIBRARIES})
+    set(SuiteSparse_LINKER_LAPACK_BLAS_LIBS) # ${MKL_LIBRARIES}) # this will be found by our own FindMKL.cmake later on
     set(SuiteSparse_WITH_MKL YES)
     set(SuiteSparse_LAPACK_used_CONFIG NO)
   endif()
